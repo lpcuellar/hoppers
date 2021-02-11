@@ -3,6 +3,7 @@
 ##  LUIS PEDRO CUÉLLAR 1822
 
 import numpy
+from beautifultable import BeautifulTable
 
 class AIPlayer(object):
     def __init__(self, isP1ABot = True, isP2ABot = True):
@@ -32,7 +33,10 @@ class AIPlayer(object):
         self.build_game()
 
     def build_game_board(self):
-        print(self.current_board_state)
+        self.board = BeautifulTable()
+        for i in self.current_board_state: self.board.rows.append(i)
+
+        print("\n", self.board, "\n")
 
     
     def build_players_camp(self): 
@@ -68,9 +72,18 @@ class AIPlayer(object):
 
         return False
 
+    def user_coords_into_tulpe(self, user_coords):
+        user_coords = user_coords.split(',')
+        cords = tuple(user_coords)
+
+        return cords
+
     def move_players_piece(self, init_position, end_position):
-        self.current_board_state[end_position[1]][end_position[0]] = 1 if self.is_turn_of_P1 == True else -1
-        self.current_board_state[init_position[1]][init_position[0]] = 0
+        init_position = self.user_coords_into_tulpe(init_position)
+        end_position = self.user_coords_into_tulpe(end_position)
+
+        self.current_board_state[int(end_position[1])][int(end_position[0])] = 1 if self.is_turn_of_P1 == True else -1
+        self.current_board_state[int(init_position[1])][int(init_position[0])] = 0
 
     def build_game(self):
         self.build_game_board()
@@ -81,38 +94,30 @@ class AIPlayer(object):
 
                 if self.is_P1_a_bot:
                     print('implementacion de bot')
-                    init_x = 0
-                    init_y = 0
+                    init_pos = 0
                     
-                    end_x = 0
-                    end_y = 0
+                    end_pos = 0
                 
                 else:
-                    init_x = input("Ingrese la coordinadas en x de la pieza que desea mover: ")
-                    init_y = input("Ingrese la coordinadas en y de la pieza que desea mover: ")
+                    init_pos = input("Ingrese las coordinadas (x, y) de la pieza que desea mover: ")
 
-                    end_x = input("Ingrese la coordinada en x a donde desea moverse: ")
-                    end_y = input("Ingrese la coordinada en x a donde desea moverse: ")
+                    end_pos = input("Ingrese las coordinadas (x, y) a donde desea mover la pieza: ")
                     
             else:
                 print('JUGADOR 2')
 
                 if self.is_P2_a_bot:
                     print('implementacion de bot')
-                    init_x = 0
-                    init_y = 0
+                    init_pos = 0
                     
-                    end_x = 0
-                    end_y = 0
+                    end_pos = 0
 
                 else:
-                    init_x = input("Ingrese la coordinadas en x de la pieza que desea mover: ")
-                    init_y = input("Ingrese la coordinadas en y de la pieza que desea mover: ")
+                    init_pos = input("Ingrese las coordinadas (x, y) de la pieza que desea mover: ")
 
-                    end_x = input("Ingrese la coordinada en x a donde desea moverse: ")
-                    end_y = input("Ingrese la coordinada en x a donde desea moverse: ")
+                    end_pos = input("Ingrese las coordinadas (x, y) a donde desea mover la pieza: ")
 
-            self.move_players_piece((int(init_x), int(init_y)), (int(end_x), int(end_y)))
+            self.move_players_piece(init_pos, end_pos)
             self.next_turn()
             self.build_game_board()
     
@@ -135,13 +140,7 @@ class AIPlayer(object):
         E   = self.valid_direction(E)
         NE  = self.valid_direction(NE)
 
-        return [
-                        N,
-                    NW,     NE,
-                W,              E,
-                    SW,     SE,
-                        S,
-        ]
+        return [ N, NW, W, SW, S, SE, E, NE]
 
     def valid_direction(self, direction):
         if (direction[0] < 0 or direction[0] > 9) and (direction[1] < 0 or direction[1] > 9):
